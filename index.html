@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lottery Number Generator</title>
+    <title data-i18n="documentTitle">Lottery Number Generator</title>
     <style>
         :root {
             --background-color: #f4f4f4;
@@ -119,47 +119,93 @@
         .button-group {
             margin-top: 20px;
         }
-        .theme-toggle-button {
+        .settings-container {
             position: absolute;
             top: 20px;
             right: 20px;
-            background-color: var(--button-bg-color);
-            color: white;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        .settings-container button {
             padding: 10px 15px;
             border-radius: 5px;
-            cursor: pointer;
             font-size: 0.9em;
-            z-index: 1000;
+            background-color: var(--button-bg-color);
+            color: white;
+            border: none;
+            cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        .theme-toggle-button:hover {
+        .settings-container button:hover {
             background-color: var(--button-hover-bg-color);
         }
     </style>
 </head>
 <body>
-    <button class="theme-toggle-button" onclick="toggleTheme()">테마 전환</button>
+    <div class="settings-container">
+        <button class="theme-toggle-button" onclick="toggleTheme()" data-i18n="toggleThemeButton">테마 전환</button>
+        <button onclick="setLanguage('ko')">한국어</button>
+        <button onclick="setLanguage('en')">English</button>
+    </div>
     <div class="container">
-        <h1>로또 번호 생성기</h1>
+        <h1 data-i18n="mainTitle">로또 번호 생성기</h1>
 
         <div class="lottery-section">
-            <h2>메가 밀리언 (Mega Millions)</h2>
+            <h2 data-i18n="megaMillionsTitle">메가 밀리언 (Mega Millions)</h2>
             <div id="megaMillionsNumbers" class="numbers"></div>
             <div class="button-group">
-                <button onclick="generateMegaMillions()">번호 생성</button>
+                <button onclick="generateMegaMillions()" data-i18n="generateNumbersButton">번호 생성</button>
             </div>
         </div>
 
         <div class="lottery-section">
-            <h2>파워볼 (Powerball)</h2>
+            <h2 data-i18n="powerballTitle">파워볼 (Powerball)</h2>
             <div id="powerballNumbers" class="numbers"></div>
             <div class="button-group">
-                <button onclick="generatePowerball()">번호 생성</button>
+                <button onclick="generatePowerball()" data-i18n="generateNumbersButton">번호 생성</button>
             </div>
         </div>
     </div>
 
     <script>
+        const translations = {
+            'ko': {
+                documentTitle: '로또 번호 생성기',
+                mainTitle: '로또 번호 생성기',
+                megaMillionsTitle: '메가 밀리언 (Mega Millions)',
+                powerballTitle: '파워볼 (Powerball)',
+                generateNumbersButton: '번호 생성',
+                toggleThemeButton: '테마 전환'
+            },
+            'en': {
+                documentTitle: 'Lottery Number Generator',
+                mainTitle: 'Lottery Number Generator',
+                megaMillionsTitle: 'Mega Millions',
+                powerballTitle: 'Powerball',
+                generateNumbersButton: 'Generate Numbers',
+                toggleThemeButton: 'Toggle Theme'
+            }
+        };
+
+        function setLanguage(lang) {
+            document.documentElement.lang = lang; // Set lang attribute on <html>
+            localStorage.setItem('language', lang);
+            applyTranslations(lang);
+        }
+
+        function applyTranslations(lang) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (element.tagName === 'TITLE') {
+                    element.textContent = translations[lang][key];
+                } else if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+        }
+
         function generateRandomNumbers(count, max, exclude = []) {
             const numbers = new Set();
             while (numbers.size < count) {
@@ -207,11 +253,14 @@
             }
         }
 
-        // Apply theme on page load
+        // Apply theme and language on page load
         (function() {
             if (localStorage.getItem('theme') === 'dark') {
                 document.body.classList.add('dark-mode');
             }
+
+            const savedLanguage = localStorage.getItem('language') || 'ko'; // Default to Korean
+            setLanguage(savedLanguage);
         })();
     </script>
 </body>
