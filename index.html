@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottery Number Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 25px;
+        }
+        .lottery-section {
+            margin-bottom: 30px;
+            border: 1px solid #eee;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+        }
+        h2 {
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .numbers {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 20px;
+            min-height: 1.5em; /* Ensure space even when empty */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .numbers span {
+            background-color: #e9ecef;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .mega-ball, .power-ball {
+            background-color: #dc3545 !important;
+            color: #fff;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .button-group {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>로또 번호 생성기</h1>
+
+        <div class="lottery-section">
+            <h2>메가 밀리언 (Mega Millions)</h2>
+            <div id="megaMillionsNumbers" class="numbers"></div>
+            <div class="button-group">
+                <button onclick="generateMegaMillions()">번호 생성</button>
+            </div>
+        </div>
+
+        <div class="lottery-section">
+            <h2>파워볼 (Powerball)</h2>
+            <div id="powerballNumbers" class="numbers"></div>
+            <div class="button-group">
+                <button onclick="generatePowerball()">번호 생성</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateRandomNumbers(count, max, exclude = []) {
+            const numbers = new Set();
+            while (numbers.size < count) {
+                let num = Math.floor(Math.random() * max) + 1;
+                if (!exclude.includes(num)) {
+                    numbers.add(num);
+                }
+            }
+            return Array.from(numbers).sort((a, b) => a - b);
+        }
+
+        function displayNumbers(elementId, mainNumbers, specialBall) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
+            mainNumbers.forEach(num => {
+                const span = document.createElement('span');
+                span.textContent = num;
+                container.appendChild(span);
+            });
+            const specialSpan = document.createElement('span');
+            specialSpan.textContent = specialBall;
+            specialSpan.classList.add(elementId.includes('mega') ? 'mega-ball' : 'power-ball');
+            container.appendChild(specialSpan);
+        }
+
+        function generateMegaMillions() {
+            const mainNumbers = generateRandomNumbers(5, 70); // 5 unique numbers from 1 to 70
+            const megaBall = Math.floor(Math.random() * 25) + 1; // 1 Mega Ball from 1 to 25
+            displayNumbers('megaMillionsNumbers', mainNumbers, megaBall);
+        }
+
+        function generatePowerball() {
+            const mainNumbers = generateRandomNumbers(5, 69); // 5 unique numbers from 1 to 69
+            const powerBall = Math.floor(Math.random() * 26) + 1; // 1 Powerball from 1 to 26
+            displayNumbers('powerballNumbers', mainNumbers, powerBall);
+        }
+    </script>
+</body>
+</html>
